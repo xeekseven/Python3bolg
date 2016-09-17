@@ -5,8 +5,9 @@ from jinja2 import Environment,FileSystemLoader
 from datetime import datetime
 from aiohttp import web
 
+from config import configs
 
-from aiohttp import web
+from handlers import cookie2user,COOKIE_NAME
 from WebKuangJia import add_routes,add_static
 
 
@@ -20,32 +21,75 @@ def init_jinja2(app,**kw):
 		variable_end_string=kw.get('variable_end_string','}}'),
 		auto_reload=kw.get('auto_reload',True)
 		)
-	path=kw.get('path',None)
+	path=kw.get('path',None)#如果path不存在，返回None
 	if path is None:
 		path=os.path.join(os.path.dirname(os.path.abspath(__file__)),'templates')
 	logging.info('set jinja2 template path :%s' % path)
+
+	#猜测是加载初始环境配置
 	env=Environment(loader=FileSystemLoader(path),**options)
+
 	filters=kw.get('filters',None)
 	if filters is not None:
 		for name,f in filters.items():
 			env.filters[name]=f
 	app['__templating__']=env
 
+
+#输入数据的过滤器
 async def logger_factory(app,handler):
 	async def logger(request):
 		logging.info('Request: %s %s' % (request.method,request.path))
 		return (await handler(request))
 	return logger
 
+
+
+async def auth_factory(app, handler):
+    
+    async def auth(request):
+        logging.info('check user: %s %s' % (request.method, request.path))
+        request.__user__ = None
+        cookie_str = request.cookies.get(COOKIE_NAME)
+        if cookie_str:
+            user = await cookie2user(cookie_str)
+            if user:
+                logging.info('set current user: %s' % user.email)
+                request.__user__ = user#验证cookie绑定user
+        if request.path.startswith('/manage/') and (request.__user__ is None or not request.__user__.admin):
+            return web.HTTPFound('/signin')
+        return (await handler(request))
+    return auth
+'''
+async def auth_factory(app,handler):
+	async def auth(request):
+		logging.info('check user:%s %s' % (request.method,request.path))
+		request.__user__=None
+		cookie_str=request.cookies.get(COOKIE_NAME)
+		if cookie_str:
+			user=await cookie2user(cookie_str)
+			if user:
+				logging.info('set current user: %s' % user.email)
+				request.__user__=user
+			if request.path.startswith('/manage/') and (request.__user__ is None or not request.__user__.admin):
+				return web.HTTPFound('/signin')
+			return (await handler(request))
+		return auth
+'''
+
 async def data_factory(app,handler):
 	async def parse_data(request):
 		if request.method=='POST':
-			if request.content_type.startswith('applocation/json'):
+			if request.content_type.startswith('application/json'):
 				request.__data__=await request.json()
 				logging.info('request form:%s' % str(request.__data__))
+			elif request.content_type.startswith('applicaion/x-www-form-urlencoded'):
+				request.__data__=await request.post()
+				logging.info('request from %s' % str(request.__data__))
 		return	(await handler(request))
 	return parse_data
 
+#处理返回给浏览器的数据，是返回数据的过滤器，转换功能
 async def response_factory(app,handler):
 	async def response(request):
 		logging.info('Request handler...')
@@ -69,6 +113,7 @@ async def response_factory(app,handler):
 				resp.content_type='application/json;charset=utf-8'
 				return resp
 			else :
+				r['__user__']=request.__user__
 				resp =web.Response(body=app['__templating__'].get_template(template).render(**r).encode('utf-8'))
 				resp.content_type='text/html;charset=utf-8'
 				return resp
@@ -98,13 +143,18 @@ def datetime_filter(t):
 	dt=datetime.fromtimestamp(t)
 	return u'%s年%s月%s天' % (dt.year,dt.month,dt.day)
 
-
+'''
 def index(request):
     return web.Response(body=b'<h1>Awesome</h1>')
-
+'''
 async def init(loop):    
+	#1、创建数据库连接池
+	#2、设置app初始化的过滤器和循环
+	#3、初始化Jinja2框架-具体为设置模板
+	#4、添加每次输入的Url处理模块/访问时会用
+	#5、创建服务器
 	await OrmBase.create_pool(loop=loop,host='127.0.0.1',post=3306,user='Luot',password='lt1234',db='PyDataBaseOne')
-	app=web.Application(loop=loop,middlewares=[logger_factory,response_factory])
+	app=web.Application(loop=loop,middlewares=[logger_factory,auth_factory,response_factory])
 	init_jinja2(app,filters=dict(datetime=datetime_filter))
 	add_routes(app,'handlers')
 	add_static(app)
@@ -113,6 +163,7 @@ async def init(loop):
 	return srv
 
 loop=asyncio.get_event_loop()
+#设置开始的时候初始化的函数
 loop.run_until_complete(init(loop))
 loop.run_forever()
 

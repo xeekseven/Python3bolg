@@ -8,6 +8,6 @@ configs={
 		'db':'PyDatabaseOne'
 	},
 	'session':{
-		'secret':'PydatabaseOne'
+		'secret':'PyBlog'
 	}
 }
