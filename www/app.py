@@ -153,12 +153,12 @@ async def init(loop):
 	#3、初始化Jinja2框架-具体为设置模板
 	#4、添加每次输入的Url处理模块/访问时会用
 	#5、创建服务器
-	await OrmBase.create_pool(loop=loop,host='127.0.0.1',post=3306,user='Luot',password='lt1234',db='PyDataBaseOne')
+	await OrmBase.create_pool(loop=loop,**configs.db)
 	app=web.Application(loop=loop,middlewares=[logger_factory,auth_factory,response_factory])
 	init_jinja2(app,filters=dict(datetime=datetime_filter))
 	add_routes(app,'handlers')
 	add_static(app)
-	srv=await loop.create_server(app.make_handler(),'127.0.0.1',9999)
+	srv=await loop.create_server(app.make_handler(),'10.15.33.182',9999)
 	logging.info('server started at 127.0.0.1:9999............')
 	return srv
 

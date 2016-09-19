@@ -1,7 +1,7 @@
 configs={
 	'debug':True,
 	'db':{
-		'host':'127.0.0.1',
+		'host':'10.15.33.182',
 		'port':3306,
 		'user':'Luot',
 		'password':'lt1234',
