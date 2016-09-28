@@ -1,7 +1,7 @@
-²¿ÊğÔÚ°¢ÀïÔÆubuntuµÄÊ±ºòµÄÒ»Ğ©¼ÇÂ¼
+éƒ¨ç½²åœ¨é˜¿é‡Œäº‘ubuntuçš„æ—¶å€™çš„ä¸€äº›è®°å½•
 
-Ò»¡¢
-¶Ôapt-get¸üĞÂ ÎªÁË°²×°mysql-server
+ä¸€ã€
+å¯¹apt-getæ›´æ–° ä¸ºäº†å®‰è£…mysql-server
 sudo apt-get update
 
 sudo apt-get install mysql-server
@@ -21,7 +21,7 @@ sudo apt-get install python-software-properties
 
 sudo apt-get install software-properties-common
 
-°²×°python3.5
+å®‰è£…python3.5
 sudo add-apt-repository ppa:fkrull/deadsnakes
 
 sudo apt-get update
@@ -34,7 +34,7 @@ sudo ln -s /usr/bin/python3.5 /usr/bin/python3
 
 sudo apt-get install python3-pip
 
-°²×°virtualenv
+å®‰è£…virtualenv
 
 sudo pip3 install virtualenv
 
@@ -49,31 +49,31 @@ source venv/bin/activate
 pip install aiohttp aiomysql jinja2
 
 
-²âÊÔÒ»ÏÂ////
+æµ‹è¯•ä¸€ä¸‹////
 python3 /srv/py3b/www/app.py
 
-supervisorÊØ»¤app.py(ÕÒ´íing)
+supervisorå®ˆæŠ¤app.py(æ‰¾é”™ing)
 \
-Ê×ÏÈ£º
-ubuntu 14.04 °¢ÀïÔÆ
+é¦–å…ˆï¼š
+ubuntu 14.04 é˜¿é‡Œäº‘
 
-²»Òª supervisorctl reload!!!!!
-²»Òª supervisorctl reload!!!!!
-²»Òª supervisorctl reload!!!!!
+ä¸è¦ supervisorctl reload!!!!!
+ä¸è¦ supervisorctl reload!!!!!
+ä¸è¦ supervisorctl reload!!!!!
 
 1:
 sudo apt-get install supervisor
 
 2:
-É¾³ı /etc/supervisor/supervisord.conf
+åˆ é™¤ /etc/supervisor/supervisord.conf
 
 rm  /etc/supervisor/supervisord.conf
 
-3:ÓÃÃüÁî´´½¨ÅäÖÃÎÄ¼ş
+3:ç”¨å‘½ä»¤åˆ›å»ºé…ç½®æ–‡ä»¶
 echo_supervisord_conf > /etc/supervisord.conf
 
-4:ÔÚsupervisord.confÀïÃæĞ´Èë[program:py3b],»òÕßµ¥¶ÀĞ´ÍâÃæ£¬¸Ä[include]
-ÔÙÒÔ´ËÅäÖÃÆô¶¯
+4:åœ¨supervisord.confé‡Œé¢å†™å…¥[program:py3b],æˆ–è€…å•ç‹¬å†™å¤–é¢ï¼Œæ”¹[include]
+å†ä»¥æ­¤é…ç½®å¯åŠ¨
 supervisord -c/etc/supervisord.conf
 
 5:
@@ -82,8 +82,8 @@ sudo supervisorctl
 supervisorctl>start py3b
 supervisorctl>status
 
-6:³ö´íµÄÊ±ºò
-supervisorctl tail <app_name> ¿ÉÒÔ²é¿´
+6:å‡ºé”™çš„æ—¶å€™
+supervisorctl tail <app_name> å¯ä»¥æŸ¥çœ‹
 
 '''
 1.
@@ -105,3 +105,15 @@ sudo chmod 777 /tmp/supervisor.sock
 
 sudo service supervisor restart
 '''
+
+
+
+æœ€åçš„å°ç»“ä¸€ä¸‹:
+ç”¨åˆ°äº†
+æ“ä½œç³»ç»Ÿï¼šubuntu14.04
+å®ˆæŠ¤è¿›ç¨‹ï¼šsupervisor
+webæœåŠ¡å™¨ï¼šnginx
+è¿œç¨‹å‘½ä»¤è¡Œå°æ¡Œé¢sshè¿æ¥ï¼šputty
+windowsä¼ è¾“åˆ°linuxï¼špscp  æŠŠpscp.exeæ”¾å…¥ windows\system32å‘½ä»¤è¡Œä¾¿å¯ç”¨
+nginx
+
