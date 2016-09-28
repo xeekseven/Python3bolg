@@ -1,11 +1,11 @@
 configs={
 	'debug':True,
 	'db':{
-		'host':'10.15.33.182',
+		'host':'127.0.0.1',
 		'port':3306,
-		'user':'Luot',
-		'password':'lt1234',
-		'db':'PyDatabaseOne'
+		'user':'root',
+		'password':'root1234',
+		'db':'pydatabaseone'
 	},
 	'session':{
 		'secret':'PyBlog'
