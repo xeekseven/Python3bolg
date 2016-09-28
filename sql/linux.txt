@@ -1,3 +1,7 @@
+部署在阿里云ubuntu的时候的一些记录
+
+一、
+对apt-get更新 为了安装mysql-server
 sudo apt-get update
 
 sudo apt-get install mysql-server
